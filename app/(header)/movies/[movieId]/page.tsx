@@ -66,9 +66,15 @@ export const generateMetadata = async ({ params }: Props) => {
 }
 
 async function fetchMovie(MovieId: string) {
-  const { data: movie } = await axios.get<Movie>(
-    `https://omdbapi.com?apikey=${process.env.OMDB_APIKEY}&i=${MovieId}`
+  // const { data: movie } = await axios.get<Movie>(
+  //   `https://omdbapi.com?apikey=${process.env.OMDB_APIKEY}&i=${MovieId}`
+  // )
+  const response = await fetch(
+    `https://omdbapi.com?apikey=${process.env.OMDB_APIKEY}&i=${MovieId}`,
+    { cache: 'force-cache' }
   )
+  const movie = await response.json()
+
   return movie
 }
 
