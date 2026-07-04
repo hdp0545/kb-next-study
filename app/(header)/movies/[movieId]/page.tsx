@@ -49,7 +49,7 @@ export interface Rating {
 //   }
 // }
 
-export const generateMetadata = async ({ params }: Props) => {
+export async function generateMetadata({ params }: Props) {
   const { movieId } = await params
   const movie = await fetchMovie(movieId)
   return {
