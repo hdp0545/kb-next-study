@@ -37,24 +37,45 @@ export interface Rating {
   Value: string
 }
 
-export const metadata = {
-  title: '영화상세정보',
-  description: '영화상세정보 설명',
-  openGraph: {
-    type: 'website',
-    siteName: 'Next.js 연습사이트',
-    title: 'Movie Details',
-    description: 'Movie Details Page',
-    images: 'https://picsum.photos/700/500'  
+// export const metadata = {
+//   title: '영화상세정보',
+//   description: '영화상세정보 설명',
+//   openGraph: {
+//     type: 'website',
+//     siteName: 'Next.js 연습사이트',
+//     title: 'Movie Details',
+//     description: 'Movie Details Page',
+//     images: 'https://picsum.photos/700/500'
+//   }
+// }
+
+export const generateMetadata = async ({ params }: Props) => {
+  const { movieId } = await params
+  const movie = await fetchMovie(movieId)
+  return {
+    title: movie.Title,
+    description: movie.Plot,
+    openGraph: {
+      type: 'website',
+      siteName: 'Next.js 연습사이트',
+      title: movie.Title,
+      description: movie.Plot,
+      images: movie.Poster
+    }
   }
+}
+
+async function fetchMovie(MovieId: string) {
+  const { data: movie } = await axios.get<Movie>(
+    `https://omdbapi.com?apikey=${process.env.OMDB_APIKEY}&i=${MovieId}`
+  )
+  return movie
 }
 
 // http://localhost:3000/movies/tt123455123
 export default async function MovieDetails({ params }: Props) {
   const { movieId } = await params
-  const { data: movie } = await axios.get<Movie>(
-    `https://omdbapi.com?apikey=${process.env.OMDB_APIKEY}&i=${movieId}`
-  )
+  const movie = await fetchMovie(movieId)
   return (
     <>
       <h1>{movie.Title}</h1>
